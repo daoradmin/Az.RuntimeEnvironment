@@ -13,4 +13,4 @@ jobs:
         uses: aammirmirza/Publish2PSGallery@PSGallery_v2
         with:
           NuGetApiKey: ${{ secrets.NuGetApiKey }}
-          modulePath: ${{ github.event.inputs.NuGetApiKey }}
+          modulePath: ./src/Az.RuntimeEnvironment
