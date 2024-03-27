@@ -1,0 +1,16 @@
+name: Publish to PSGallery
+
+on: workflow_dispatch
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Publish to PSGallery
+        uses: aammirmirza/Publish2PSGallery@PSGallery_v2
+        with:
+          NuGetApiKey: ${{ secrets.NuGetApiKey }}
+          modulePath: ${{ github.event.inputs.NuGetApiKey }}
