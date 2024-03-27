@@ -24,3 +24,25 @@ This PowerShell module provides cmdlets to manage Azure Automation Account Runti
 ### Set-RuntimeEnvironmentPackage
 - **Brief Description**: Updates the package associated with a specific Azure Automation Account Runtime Environment.
 - **Detailed Description**: This command facilitates the update of the package associated with a particular Runtime Environment within an Azure Automation Account. Users can upload a new package, specify versioning information, and configure other relevant settings to ensure smooth operation of the Runtime Environment with the updated package.
+
+## Example Usages
+- **Get-RuntimeEnvironment:**
+  ```powershell
+  Get-RuntimeEnvironment -SubscriptionId "XXX" -ResourceGroupName "RG-Test" -AutomationAccountName "AA-Test" -RuntimeEnvironmentName "Custom-PS"
+  ```
+- **Get-RuntimeEnvironments:**
+  ```powershell
+  Get-RuntimeEnvironments -SubscriptionId "XXX" -ResourceGroupName "RG-Test" -AutomationAccountName "AA-Test"
+  ```
+- **New-RuntimeEnvironment:**
+  ```powershell
+  New-RuntimeEnvironment -SubscriptionId "XXX" -ResourceGroupName "RG-Test" -AutomationAccountName "AA-Test" -RuntimeEnvironmentName "Custom-PS" -Location "westeurope" -Language Powershell -Version 7.2
+  ```
+- **Remove-RuntimeEnvironment:**
+  ```powershell
+  Remove-RuntimeEnvironment -SubscriptionId "XXX" -ResourceGroupName "RG-Test" -AutomationAccountName "AA-Test" -RuntimeEnvironmentName "Custom-PS"
+  ```
+- **Set-RuntimeEnvironmentPackage:**
+  ```powershell
+  Set-RuntimeEnvironmentPackage -SubscriptionId "XXX" -ResourceGroupName "RG-Test" -AutomationAccountName "AA-Test" -RuntimeEnvironmentName "Custom-PS" -PackageName "CustomPSModule" -ContentLink "XXX"
+  ```
