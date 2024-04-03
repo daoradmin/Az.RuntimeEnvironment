@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+    Retrieves the Azure header for authentication.
+
+.DESCRIPTION
+    The Get-AzHeader function retrieves the Azure header required for authentication. It obtains an access token using the Get-AzAccessToken function and constructs the header with the token.
+
+.OUTPUTS
+    System.Collections.Hashtable
+        Returns a hashtable representing the Azure header.
+
+.EXAMPLE
+    $header = Get-AzHeader
+    # Use the $header hashtable for authentication in Azure API calls.
+
+.NOTES
+    Author: [Your Name]
+    Date: [Current Date]
+#>
 function Get-AzHeader {
     try {
         $Token = Get-AzAccessToken | Select-Object -ExpandProperty Token
@@ -8,19 +27,45 @@ function Get-AzHeader {
         throw $_
     }
 }
+<#
+.SYNOPSIS
+Retrieves information about a specific runtime environment in an Azure Automation account.
+
+.DESCRIPTION
+The Get-RuntimeEnvironment function retrieves information about a specific runtime environment in an Azure Automation account. It makes a GET request to the Azure Management API to fetch the details of the specified runtime environment.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription that contains the automation account.
+
+.PARAMETER ResourceGroupName
+The name of the resource group that contains the automation account.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.PARAMETER RuntimeEnvironmentName
+The name of the runtime environment to retrieve information for.
+
+.EXAMPLE
+Get-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment"
+
+This example retrieves information about a runtime environment named "MyRuntimeEnvironment" in the Azure Automation account "MyAutomationAccount" located in the "MyResourceGroup" resource group of the specified Azure subscription.
+
+#>
+
 function Get-RuntimeEnvironment {
     param (
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
         
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
         
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName,
+        [string]$AutomationAccountName,
         
         [Parameter(Mandatory = $true)]
-        $RuntimeEnvironmentName
+        [string]$RuntimeEnvironmentName
     )
 
     $ErrorActionPreference = "Stop"
@@ -39,16 +84,38 @@ function Get-RuntimeEnvironment {
         throw $_
     }
 }
+<#
+.SYNOPSIS
+Retrieves the runtime environments for an Azure Automation account.
+
+.DESCRIPTION
+The Get-RuntimeEnvironments function retrieves the runtime environments for a specified Azure Automation account. It makes a GET request to the Azure Management API to fetch the runtime environments.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription where the Automation account is located.
+
+.PARAMETER ResourceGroupName
+The name of the resource group where the Automation account is located.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.EXAMPLE
+Get-RuntimeEnvironments -SubscriptionId "12345678-90ab-cdef-ghij-klmnopqrstuv" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount"
+
+This example retrieves the runtime environments for the specified Azure Automation account.
+
+#>
 function Get-RuntimeEnvironments {
     param (
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
         
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
         
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName
+        [string]$AutomationAccountName
     )
     
     $ErrorActionPreference = "Stop"
@@ -68,25 +135,62 @@ function Get-RuntimeEnvironments {
         throw $_
     }
 }
+<#
+.SYNOPSIS
+Creates a new runtime environment in an Azure Automation account.
+
+.DESCRIPTION
+The New-RuntimeEnvironment function creates a new runtime environment in an Azure Automation account. It allows you to specify the subscription ID, resource group name, automation account name, runtime environment name, location, language, and whether to include default packages.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription.
+
+.PARAMETER ResourceGroupName
+The name of the resource group.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.PARAMETER RuntimeEnvironmentName
+The name of the runtime environment.
+
+.PARAMETER Location
+The location where the runtime environment will be created. Default value is "westeurope".
+
+.PARAMETER Language
+The language of the runtime environment. Valid values are "Powershell" and "Python". Default value is "Powershell".
+
+.PARAMETER NoDefaultPackages
+Specifies whether to include default packages for the Powershell language. By default, default packages are included.
+
+.EXAMPLE
+New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Powershell"
+
+This example creates a new Powershell runtime environment in the specified Azure Automation account.
+
+.EXAMPLE
+New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Python" -NoDefaultPackages
+
+This example creates a new Python runtime environment in the specified Azure Automation account without including default packages.
+
+#>
 function New-RuntimeEnvironment {
     [CmdletBinding()]
     param (
-        # Uri Parameters
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
         
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
         
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName,
+        [string]$AutomationAccountName,
         
         [Parameter(Mandatory = $true)]
-        $RuntimeEnvironmentName,
+        [string]$RuntimeEnvironmentName,
 
-        # Body Parameters
         [Parameter(Mandatory = $false)]
-        $Location = "westeurope",
+        [string]$Location = "westeurope",
 
         [Parameter(Mandatory = $true)]
         [ValidateSet("Powershell", "Python")]
@@ -178,19 +282,44 @@ function New-RuntimeEnvironment {
 
     }
 }
+<#
+.SYNOPSIS
+Removes a runtime environment from an Azure Automation account.
+
+.DESCRIPTION
+The Remove-RuntimeEnvironment function removes a specified runtime environment from an Azure Automation account. It sends a DELETE request to the Azure Management API to delete the runtime environment.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription that contains the resource group and automation account.
+
+.PARAMETER ResourceGroupName
+The name of the resource group that contains the automation account.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.PARAMETER RuntimeEnvironmentName
+The name of the runtime environment to be removed.
+
+.EXAMPLE
+Remove-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment"
+
+This example removes a runtime environment named "MyRuntimeEnvironment" from the Azure Automation account "MyAutomationAccount" in the resource group "MyResourceGroup" under the specified subscription.
+
+#>
 function Remove-RuntimeEnvironment {
     param (
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
         
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
         
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName,
+        [string]$AutomationAccountName,
         
         [Parameter(Mandatory = $true)]
-        $RuntimeEnvironmentName
+        [string]$RuntimeEnvironmentName
     )
 
     $ErrorActionPreference = "Stop"
@@ -209,25 +338,56 @@ function Remove-RuntimeEnvironment {
         throw $_
     }
 }
+<#
+.SYNOPSIS
+Sets the package for a runtime environment in an Azure Automation account.
+
+.DESCRIPTION
+The Set-RuntimeEnvironmentPackage function sets the package for a specific runtime environment in an Azure Automation account. The package is specified by providing the subscription ID, resource group name, automation account name, runtime environment name, package name, and content link.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription.
+
+.PARAMETER ResourceGroupName
+The name of the resource group containing the Azure Automation account.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.PARAMETER RuntimeEnvironmentName
+The name of the runtime environment.
+
+.PARAMETER PackageName
+The name of the package. It must be the same as the module name.
+
+.PARAMETER ContentLink
+The SAS URL with reader permission for the package content.
+
+.EXAMPLE
+Set-RuntimeEnvironmentPackage -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -PackageName "MyPackage" -ContentLink "https://example.com/mypackage.sas"
+
+This example sets the package for the "MyRuntimeEnvironment" runtime environment in the "MyAutomationAccount" Azure Automation account. The package name is "MyPackage" and the content link is "https://example.com/mypackage.sas".
+
+#>
 function Set-RuntimeEnvironmentPackage {
     param (
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
 
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
 
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName,
+        [string]$AutomationAccountName,
 
         [Parameter(Mandatory = $true)]
-        $RuntimeEnvironmentName,
+        [string]$RuntimeEnvironmentName,
 
         [Parameter(Mandatory = $true)]
-        $PackageName, # Have to be the same as the module name
+        [string]$PackageName, # Have to be the same as the module name
 
         [Parameter(Mandatory = $true)]
-        $ContentLink # Have to be a SAS URL with reader permission
+        [string]$ContentLink # Have to be a SAS URL with reader permission
     )
 
     $ErrorActionPreference = "Stop"
