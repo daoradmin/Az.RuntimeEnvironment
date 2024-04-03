@@ -1,22 +1,53 @@
+<#
+.SYNOPSIS
+Sets the package for a runtime environment in an Azure Automation account.
+
+.DESCRIPTION
+The Set-RuntimeEnvironmentPackage function sets the package for a specific runtime environment in an Azure Automation account. The package is specified by providing the subscription ID, resource group name, automation account name, runtime environment name, package name, and content link.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription.
+
+.PARAMETER ResourceGroupName
+The name of the resource group containing the Azure Automation account.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.PARAMETER RuntimeEnvironmentName
+The name of the runtime environment.
+
+.PARAMETER PackageName
+The name of the package. It must be the same as the module name.
+
+.PARAMETER ContentLink
+The SAS URL with reader permission for the package content.
+
+.EXAMPLE
+Set-RuntimeEnvironmentPackage -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -PackageName "MyPackage" -ContentLink "https://example.com/mypackage.sas"
+
+This example sets the package for the "MyRuntimeEnvironment" runtime environment in the "MyAutomationAccount" Azure Automation account. The package name is "MyPackage" and the content link is "https://example.com/mypackage.sas".
+
+#>
 function Set-RuntimeEnvironmentPackage {
     param (
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
 
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
 
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName,
+        [string]$AutomationAccountName,
 
         [Parameter(Mandatory = $true)]
-        $RuntimeEnvironmentName,
+        [string]$RuntimeEnvironmentName,
 
         [Parameter(Mandatory = $true)]
-        $PackageName, # Have to be the same as the module name
+        [string]$PackageName, # Have to be the same as the module name
 
         [Parameter(Mandatory = $true)]
-        $ContentLink # Have to be a SAS URL with reader permission
+        [string]$ContentLink # Have to be a SAS URL with reader permission
     )
 
     $ErrorActionPreference = "Stop"

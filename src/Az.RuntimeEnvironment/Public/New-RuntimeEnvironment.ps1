@@ -1,22 +1,59 @@
+<#
+.SYNOPSIS
+Creates a new runtime environment in an Azure Automation account.
+
+.DESCRIPTION
+The New-RuntimeEnvironment function creates a new runtime environment in an Azure Automation account. It allows you to specify the subscription ID, resource group name, automation account name, runtime environment name, location, language, and whether to include default packages.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription.
+
+.PARAMETER ResourceGroupName
+The name of the resource group.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.PARAMETER RuntimeEnvironmentName
+The name of the runtime environment.
+
+.PARAMETER Location
+The location where the runtime environment will be created. Default value is "westeurope".
+
+.PARAMETER Language
+The language of the runtime environment. Valid values are "Powershell" and "Python". Default value is "Powershell".
+
+.PARAMETER NoDefaultPackages
+Specifies whether to include default packages for the Powershell language. By default, default packages are included.
+
+.EXAMPLE
+New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Powershell"
+
+This example creates a new Powershell runtime environment in the specified Azure Automation account.
+
+.EXAMPLE
+New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Python" -NoDefaultPackages
+
+This example creates a new Python runtime environment in the specified Azure Automation account without including default packages.
+
+#>
 function New-RuntimeEnvironment {
     [CmdletBinding()]
     param (
-        # Uri Parameters
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
         
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
         
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName,
+        [string]$AutomationAccountName,
         
         [Parameter(Mandatory = $true)]
-        $RuntimeEnvironmentName,
+        [string]$RuntimeEnvironmentName,
 
-        # Body Parameters
         [Parameter(Mandatory = $false)]
-        $Location = "westeurope",
+        [string]$Location = "westeurope",
 
         [Parameter(Mandatory = $true)]
         [ValidateSet("Powershell", "Python")]

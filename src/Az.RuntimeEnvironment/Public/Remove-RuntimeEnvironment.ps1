@@ -1,16 +1,41 @@
+<#
+.SYNOPSIS
+Removes a runtime environment from an Azure Automation account.
+
+.DESCRIPTION
+The Remove-RuntimeEnvironment function removes a specified runtime environment from an Azure Automation account. It sends a DELETE request to the Azure Management API to delete the runtime environment.
+
+.PARAMETER SubscriptionId
+The ID of the Azure subscription that contains the resource group and automation account.
+
+.PARAMETER ResourceGroupName
+The name of the resource group that contains the automation account.
+
+.PARAMETER AutomationAccountName
+The name of the Azure Automation account.
+
+.PARAMETER RuntimeEnvironmentName
+The name of the runtime environment to be removed.
+
+.EXAMPLE
+Remove-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment"
+
+This example removes a runtime environment named "MyRuntimeEnvironment" from the Azure Automation account "MyAutomationAccount" in the resource group "MyResourceGroup" under the specified subscription.
+
+#>
 function Remove-RuntimeEnvironment {
     param (
         [Parameter(Mandatory = $true)]
-        $SubscriptionId,
+        [string]$SubscriptionId,
         
         [Parameter(Mandatory = $true)]
-        $ResourceGroupName,
+        [string]$ResourceGroupName,
         
         [Parameter(Mandatory = $true)]
-        $AutomationAccountName,
+        [string]$AutomationAccountName,
         
         [Parameter(Mandatory = $true)]
-        $RuntimeEnvironmentName
+        [string]$RuntimeEnvironmentName
     )
 
     $ErrorActionPreference = "Stop"
