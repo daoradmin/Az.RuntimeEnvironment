@@ -22,7 +22,7 @@ try {
         Author = "daoradmin"
         CompanyName = "daoradmin"
         Description = "Powershell Module for Azure Runtime Environment"
-        ModuleVersion = "1.0.0"
+        ModuleVersion = "1.0.1"
         PowerShellVersion = "7.2"
         Path = "$ModulePath/$Name.psd1"
         FunctionsToExport = $PublicFunctions | Select-Object -ExpandProperty BaseName
