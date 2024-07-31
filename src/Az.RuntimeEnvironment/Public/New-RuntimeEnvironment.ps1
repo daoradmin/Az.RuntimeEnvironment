@@ -37,7 +37,8 @@ New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -R
 This example creates a new Python runtime environment in the specified Azure Automation account without including default packages.
 
 #>
-function New-RuntimeEnvironment {
+function New-AzRuntimeEnvironment {
+    [Alias("New-RuntimeEnvironment")]
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]

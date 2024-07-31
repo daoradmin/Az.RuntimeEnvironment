@@ -23,7 +23,8 @@ Remove-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab"
 This example removes a runtime environment named "MyRuntimeEnvironment" from the Azure Automation account "MyAutomationAccount" in the resource group "MyResourceGroup" under the specified subscription.
 
 #>
-function Remove-RuntimeEnvironment {
+function Remove-AzRuntimeEnvironment {
+    [Alias("Remove-RuntimeEnvironment")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,
