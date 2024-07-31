@@ -24,7 +24,8 @@ This example retrieves information about a runtime environment named "MyRuntimeE
 
 #>
 
-function Get-RuntimeEnvironment {
+function Get-AzRuntimeEnvironment {
+    [Alias("Get-RuntimeEnvironment")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,

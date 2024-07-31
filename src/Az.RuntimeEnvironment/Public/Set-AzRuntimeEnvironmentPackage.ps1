@@ -29,7 +29,8 @@ Set-RuntimeEnvironmentPackage -SubscriptionId "12345678-1234-1234-1234-123456789
 This example sets the package for the "MyRuntimeEnvironment" runtime environment in the "MyAutomationAccount" Azure Automation account. The package name is "MyPackage" and the content link is "https://example.com/mypackage.sas".
 
 #>
-function Set-RuntimeEnvironmentPackage {
+function Set-AzRuntimeEnvironmentPackage {
+    [Alias("Set-RuntimeEnvironmentPackage")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,

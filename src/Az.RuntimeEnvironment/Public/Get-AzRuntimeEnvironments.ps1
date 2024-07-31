@@ -20,7 +20,8 @@ Get-RuntimeEnvironments -SubscriptionId "12345678-90ab-cdef-ghij-klmnopqrstuv" -
 This example retrieves the runtime environments for the specified Azure Automation account.
 
 #>
-function Get-RuntimeEnvironments {
+function Get-AzRuntimeEnvironments {
+    [Alias("Get-RuntimeEnvironments")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,

@@ -1,6 +1,7 @@
 $ErrorActionPreference = "Stop"
 try {
     $Name = "Az.RuntimeEnvironment"
+    $Version = "1.0.2"
     
     $CurrentDirectory = $PSScriptRoot
     $ModulePath = "$CurrentDirectory/$Name"
@@ -22,7 +23,7 @@ try {
         Author = "daoradmin"
         CompanyName = "daoradmin"
         Description = "Powershell Module for Azure Runtime Environment"
-        ModuleVersion = "1.0.1"
+        ModuleVersion = $Version
         PowerShellVersion = "7.2"
         Path = "$ModulePath/$Name.psd1"
         FunctionsToExport = $PublicFunctions | Select-Object -ExpandProperty BaseName
