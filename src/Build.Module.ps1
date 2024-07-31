@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 try {
     $Name = "Az.RuntimeEnvironment"
-    $Version = "1.0.2"
+    $Version = "1.0.3"
     
     $CurrentDirectory = $PSScriptRoot
     $ModulePath = "$CurrentDirectory/$Name"
