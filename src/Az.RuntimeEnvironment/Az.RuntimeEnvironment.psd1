@@ -12,13 +12,13 @@
 RootModule = 'Az.RuntimeEnvironment.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.2'
+ModuleVersion = '1.0.3'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '828789b1-229b-48eb-bd6c-951c98c52c9c'
+GUID = 'd940d16c-f91a-4e02-853b-7e9159dac145'
 
 # Author of this module
 Author = 'daoradmin'
