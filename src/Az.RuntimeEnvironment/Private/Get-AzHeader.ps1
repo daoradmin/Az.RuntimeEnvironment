@@ -19,7 +19,8 @@
 #>
 function Get-AzHeader {
     try {
-        $Token = Get-AzAccessToken | Select-Object -ExpandProperty Token
+        $SecureToken = Get-AzAccessToken -AsSecureString | Select-Object -ExpandProperty Token
+        $Token = $SecureToken | ConvertFrom-SecureString
         $Header = @{Authorization = "Bearer $token"}
         return $Header
     }
