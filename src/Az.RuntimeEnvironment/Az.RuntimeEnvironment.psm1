@@ -19,7 +19,8 @@
 #>
 function Get-AzHeader {
     try {
-        $Token = Get-AzAccessToken | Select-Object -ExpandProperty Token
+        $SecureToken = Get-AzAccessToken -AsSecureString | Select-Object -ExpandProperty Token
+        $Token = $SecureToken | ConvertFrom-SecureString
         $Header = @{Authorization = "Bearer $token"}
         return $Header
     }
@@ -53,7 +54,8 @@ This example retrieves information about a runtime environment named "MyRuntimeE
 
 #>
 
-function Get-RuntimeEnvironment {
+function Get-AzRuntimeEnvironment {
+    [Alias("Get-RuntimeEnvironment")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,
@@ -84,6 +86,39 @@ function Get-RuntimeEnvironment {
         throw $_
     }
 }
+function Get-AzRuntimeEnvironmentPackages {
+    [Alias("Get-RuntimeEnvironmentPackages")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$SubscriptionId,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$ResourceGroupName,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$AutomationAccountName,
+
+        [Parameter(Mandatory = $true)]
+        $RuntimeEnvironmentName
+    )
+    
+    $ErrorActionPreference = "Stop"
+
+    try {
+        
+        $Params = @{
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages?api-version=2023-05-15-preview"
+            Method      = "GET"
+            ContentType = "application/json"
+            Headers     = Get-AzHeader
+        }
+        $Output = Invoke-RestMethod @Params
+        return $Output.value
+    }
+    catch {
+        throw $_
+    }
+}
 <#
 .SYNOPSIS
 Retrieves the runtime environments for an Azure Automation account.
@@ -106,7 +141,8 @@ Get-RuntimeEnvironments -SubscriptionId "12345678-90ab-cdef-ghij-klmnopqrstuv" -
 This example retrieves the runtime environments for the specified Azure Automation account.
 
 #>
-function Get-RuntimeEnvironments {
+function Get-AzRuntimeEnvironments {
+    [Alias("Get-RuntimeEnvironments")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,
@@ -174,7 +210,8 @@ New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -R
 This example creates a new Python runtime environment in the specified Azure Automation account without including default packages.
 
 #>
-function New-RuntimeEnvironment {
+function New-AzRuntimeEnvironment {
+    [Alias("New-RuntimeEnvironment")]
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
@@ -307,7 +344,8 @@ Remove-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab"
 This example removes a runtime environment named "MyRuntimeEnvironment" from the Azure Automation account "MyAutomationAccount" in the resource group "MyResourceGroup" under the specified subscription.
 
 #>
-function Remove-RuntimeEnvironment {
+function Remove-AzRuntimeEnvironment {
+    [Alias("Remove-RuntimeEnvironment")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,
@@ -369,7 +407,8 @@ Set-RuntimeEnvironmentPackage -SubscriptionId "12345678-1234-1234-1234-123456789
 This example sets the package for the "MyRuntimeEnvironment" runtime environment in the "MyAutomationAccount" Azure Automation account. The package name is "MyPackage" and the content link is "https://example.com/mypackage.sas".
 
 #>
-function Set-RuntimeEnvironmentPackage {
+function Set-AzRuntimeEnvironmentPackage {
+    [Alias("Set-RuntimeEnvironmentPackage")]
     param (
         [Parameter(Mandatory = $true)]
         [string]$SubscriptionId,
