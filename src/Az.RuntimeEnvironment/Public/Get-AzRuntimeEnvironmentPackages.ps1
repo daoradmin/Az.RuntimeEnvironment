@@ -17,7 +17,6 @@ function Get-AzRuntimeEnvironmentPackages {
     $ErrorActionPreference = "Stop"
 
     try {
-        
         $Params = @{
             Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages?api-version=2023-05-15-preview"
             Method      = "GET"
