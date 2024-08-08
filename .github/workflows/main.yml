@@ -1,6 +1,12 @@
 name: Publish to PSGallery
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'src/Az.RuntimeEnvironment/*.ps1'
+
 permissions: write-all
 
 jobs:
@@ -14,8 +20,8 @@ jobs:
         run: |
           ./src/Build.Module.ps1
 
-      #- name: Publish to PSGallery
-      #  uses: aammirmirza/Publish2PSGallery@PSGallery_v2
-      #  with:
-      #    NuGetApiKey: ${{ secrets.NuGetApiKey }}
-      #    modulePath: ./src/Az.RuntimeEnvironment
+      - name: Publish to PSGallery
+        uses: aammirmirza/Publish2PSGallery@PSGallery_v2
+        with:
+          NuGetApiKey: ${{ secrets.NuGetApiKey }}
+          modulePath: ./src/Az.RuntimeEnvironment
