@@ -1,6 +1,12 @@
 name: Publish to PSGallery
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'src/Az.RuntimeEnvironment/**.ps1'
+
 permissions: write-all
 
 jobs:
@@ -8,6 +14,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Build PS Module
+        shell: pwsh
+        run: |
+          ./src/Build.Module.ps1
 
       - name: Publish to PSGallery
         uses: aammirmirza/Publish2PSGallery@PSGallery_v2
