@@ -9,8 +9,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Publish to PSGallery
-        uses: aammirmirza/Publish2PSGallery@PSGallery_v2
-        with:
-          NuGetApiKey: ${{ secrets.NuGetApiKey }}
-          modulePath: ./src/Az.RuntimeEnvironment
+      - name: Build PS Module
+        shell: pwsh
+        run: |
+          ./src/Build.Module.ps1
+
+      #- name: Publish to PSGallery
+      #  uses: aammirmirza/Publish2PSGallery@PSGallery_v2
+      #  with:
+      #    NuGetApiKey: ${{ secrets.NuGetApiKey }}
+      #    modulePath: ./src/Az.RuntimeEnvironment
