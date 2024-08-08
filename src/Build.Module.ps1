@@ -8,7 +8,7 @@ Param(
 
 $ErrorActionPreference = "Stop"
 
-try {    
+try {
     
     $ModulePath = "$Path/$Name"
     
@@ -33,6 +33,8 @@ try {
         else {
             $NewVersion = New-Object System.Version($CurrentVersion.Major, $CurrentVersion.Minor, ($CurrentVersion.Build + 1))
         }
+
+        Write-Host "[INFO] : New Version: $NewVersion"
     }
 
     #Getting Public Functions to Export
@@ -68,6 +70,8 @@ try {
         #Adding content to OuraRing.psm1 file
         Add-Content -Path "$ModulePath/$Name.psm1" -Value $Content
     }
+
+    Write-Host "[INFO] : Module $Name has been created successfully"
 }
 catch {
     $_
