@@ -18,13 +18,11 @@ function Get-AzRuntimeEnvironmentPackages {
 
     try {
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages?api-version=2023-05-15-preview"
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages"
             Method      = "GET"
-            ContentType = "application/json"
-            Headers     = Get-AzHeader
+            Headers     = (Get-AzHeader)
         }
-        $Output = Invoke-RestMethod @Params
-        return $Output.value
+        return Invoke-AzAPI @Params
     }
     catch {
         throw $_

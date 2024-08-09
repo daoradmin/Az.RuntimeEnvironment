@@ -128,17 +128,14 @@ function New-AzRuntimeEnvironment {
             
             # Create Parameters
             $Params = @{
-                Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)?api-version=2023-05-15-preview"
+                Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
                 Method      = "PUT"
-                ContentType = "application/json"
-                Headers     = Get-AzHeader
-                Body        = $Body | ConvertTo-Json
+                Headers     = (Get-AzHeader)
+                Body        = $Body
             }
 
             # Invoke Rest Method
-            $Output = Invoke-RestMethod @Params
-            
-            return $Output
+            return Invoke-AzAPI @Params
         }
         catch {
             throw $_
