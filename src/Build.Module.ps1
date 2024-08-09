@@ -66,7 +66,7 @@ try {
     $AllFunctions += $PublicFunctions
     
     foreach ($Function in $AllFunctions) {
-        $Content = Get-Content -Path $Function.ResolvedTarget
+        $Content = Get-Content -Path $Function.FullName
         #Adding content to OuraRing.psm1 file
         Add-Content -Path "$ModulePath/$Name.psm1" -Value $Content
     }

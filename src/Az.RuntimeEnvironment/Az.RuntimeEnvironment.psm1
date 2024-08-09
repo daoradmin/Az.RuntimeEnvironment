@@ -28,6 +28,47 @@ function Get-AzHeader {
         throw $_
     }
 }
+function Invoke-AzAPI {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$Uri,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$Method,
+        
+        [Parameter(Mandatory=$true)]
+        [System.Object]$Headers,
+
+        [Parameter(Mandatory=$false)]
+        [System.Object]$Body,
+
+        [Parameter(Mandatory=$false)]
+        [string]$ApiVersion="2023-05-15-preview"
+    )
+
+    $ErrorActionPreference="Stop"
+
+    try {
+        
+        $Params = @{
+            Uri = ($Uri + "?api-version=$ApiVersion")
+            Method = $Method
+            ContentType = "application/json"
+            Headers = $Headers
+        }
+
+        if ($Body){
+            $Params.Add("Body", ($Body | ConvertTo-Json))
+        }
+
+        return Invoke-RestMethod @Params
+
+    }
+    catch {
+        throw $_
+    }
+    
+}
 <#
 .SYNOPSIS
 Retrieves information about a specific runtime environment in an Azure Automation account.
@@ -74,13 +115,44 @@ function Get-AzRuntimeEnvironment {
 
     try {
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)?api-version=2023-05-15-preview"
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
             Method      = "GET"
-            ContentType = "application/json"
-            Headers     = Get-AzHeader
+            Headers     = (Get-AzHeader)
         }
-        $Output = Invoke-RestMethod @Params
-        return $Output
+        return Invoke-AzAPI @Params
+    }
+    catch {
+        throw $_
+    }
+}
+function Get-AzRuntimeEnvironmentPackage {
+    [Alias("Get-RuntimeEnvironmentPackage")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$SubscriptionId,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$ResourceGroupName,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$AutomationAccountName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RuntimeEnvironmentName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PackageName
+    )
+    
+    $ErrorActionPreference = "Stop"
+
+    try {
+        $Params = @{
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages/$($PackageName)"
+            Method      = "GET"
+            Headers     = (Get-AzHeader)
+        }
+        return Invoke-AzAPI @Params
     }
     catch {
         throw $_
@@ -105,15 +177,12 @@ function Get-AzRuntimeEnvironmentPackages {
     $ErrorActionPreference = "Stop"
 
     try {
-        
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages?api-version=2023-05-15-preview"
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages"
             Method      = "GET"
-            ContentType = "application/json"
-            Headers     = Get-AzHeader
+            Headers     = (Get-AzHeader)
         }
-        $Output = Invoke-RestMethod @Params
-        return $Output.value
+        return Invoke-AzAPI @Params
     }
     catch {
         throw $_
@@ -159,13 +228,11 @@ function Get-AzRuntimeEnvironments {
     try {
         
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments?api-version=2023-05-15-preview"
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments"
             Method      = "GET"
-            ContentType = "application/json"
-            Headers     = Get-AzHeader
+            Headers     = (Get-AzHeader)
         }
-        $Output = Invoke-RestMethod @Params
-        return $Output.value
+        return Invoke-AzAPI @Params
     }
     catch {
         throw $_
@@ -301,17 +368,14 @@ function New-AzRuntimeEnvironment {
             
             # Create Parameters
             $Params = @{
-                Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)?api-version=2023-05-15-preview"
+                Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
                 Method      = "PUT"
-                ContentType = "application/json"
-                Headers     = Get-AzHeader
-                Body        = $Body | ConvertTo-Json
+                Headers     = (Get-AzHeader)
+                Body        = $Body
             }
 
             # Invoke Rest Method
-            $Output = Invoke-RestMethod @Params
-            
-            return $Output
+            return Invoke-AzAPI @Params
         }
         catch {
             throw $_
@@ -364,13 +428,44 @@ function Remove-AzRuntimeEnvironment {
 
     try {
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)?api-version=2023-05-15-preview"
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
             Method      = "DELETE"
-            ContentType = "application/json"
-            Headers     = Get-AzHeader
+            Headers     = (Get-AzHeader)
         }
-        $Output = Invoke-RestMethod @Params
-        return $Output
+        return Invoke-AzAPI @Params
+    }
+    catch {
+        throw $_
+    }
+}
+function Remove-AzRuntimeEnvironmentPackage {
+    [Alias("Remove-RuntimeEnvironmentPackage")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$SubscriptionId,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$ResourceGroupName,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$AutomationAccountName,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$RuntimeEnvironmentName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PackageName
+    )
+
+    $ErrorActionPreference = "Stop"
+
+    try {
+        $Params = @{
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages/$($PackageName)"
+            Method      = "DELETE"
+            Headers     = (Get-AzHeader)
+        }
+        return Invoke-AzAPI @Params
     }
     catch {
         throw $_
@@ -441,14 +536,12 @@ function Set-AzRuntimeEnvironmentPackage {
         }
 
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages/$($PackageName)?api-version=2023-05-15-preview"
+            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages/$($PackageName)"
             Method      = "PUT"
-            ContentType = "application/json"
-            Headers     = Get-AzHeader
-            Body        = $Body | ConvertTo-Json
+            Headers     = (Get-AzHeader)
+            Body        = $Body
         }
-
-        return Invoke-RestMethod @Params
+        return Invoke-AzAPI @Params
     }
     catch {
         throw $_
