@@ -60,7 +60,7 @@ function New-AzRuntimeEnvironment {
         [ValidateSet("Powershell", "Python")]
         [string]$Language = "Powershell",
 
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [switch]$NoDefaultPackages
     )
 
@@ -78,7 +78,7 @@ function New-AzRuntimeEnvironment {
         
         if ($PSBoundParameters['Language'].Equals("Powershell")) {
             # Creating the ValidateSet attribute
-            $ValidationSet = New-Object System.Management.Automation.ValidateSetAttribute('7.2', '5.1')
+            $ValidationSet = New-Object System.Management.Automation.ValidateSetAttribute('7.4', '7.2', '5.1')
         }
         elseif ($PSBoundParameters['Language'].Equals("Python")) {
             # Creating the ValidateSet attribute
@@ -115,9 +115,9 @@ function New-AzRuntimeEnvironment {
 
             # Add Default Packages Object if Language is Powershell
             if ($Language -eq "Powershell") {
-                if (!($NoDefaultPackages)){
+                if (!($NoDefaultPackages)) {
                     $defaultPackages = @{
-                        "Az" = "11.2.0"
+                        "Az" = "12.3.0"
                     }
                     $Properties | Add-Member -MemberType NoteProperty -Name "defaultPackages" -Value $defaultPackages
                 }
@@ -128,10 +128,10 @@ function New-AzRuntimeEnvironment {
             
             # Create Parameters
             $Params = @{
-                Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
-                Method      = "PUT"
-                Headers     = (Get-AzHeader)
-                Body        = $Body
+                Uri     = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
+                Method  = "PUT"
+                Headers = (Get-AzHeader)
+                Body    = $Body
             }
 
             # Invoke Rest Method
@@ -142,4 +142,5 @@ function New-AzRuntimeEnvironment {
         }
 
     }
+}
 }
