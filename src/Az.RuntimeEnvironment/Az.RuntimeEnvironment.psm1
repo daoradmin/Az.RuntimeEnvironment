@@ -43,7 +43,7 @@ function Invoke-AzAPI {
         [System.Object]$Body,
 
         [Parameter(Mandatory=$false)]
-        [string]$ApiVersion="2023-05-15-preview"
+        [string]$ApiVersion="2024-10-23"
     )
 
     $ErrorActionPreference="Stop"
@@ -69,32 +69,6 @@ function Invoke-AzAPI {
     }
     
 }
-<#
-.SYNOPSIS
-Retrieves information about a specific runtime environment in an Azure Automation account.
-
-.DESCRIPTION
-The Get-RuntimeEnvironment function retrieves information about a specific runtime environment in an Azure Automation account. It makes a GET request to the Azure Management API to fetch the details of the specified runtime environment.
-
-.PARAMETER SubscriptionId
-The ID of the Azure subscription that contains the automation account.
-
-.PARAMETER ResourceGroupName
-The name of the resource group that contains the automation account.
-
-.PARAMETER AutomationAccountName
-The name of the Azure Automation account.
-
-.PARAMETER RuntimeEnvironmentName
-The name of the runtime environment to retrieve information for.
-
-.EXAMPLE
-Get-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment"
-
-This example retrieves information about a runtime environment named "MyRuntimeEnvironment" in the Azure Automation account "MyAutomationAccount" located in the "MyResourceGroup" resource group of the specified Azure subscription.
-
-#>
-
 function Get-AzRuntimeEnvironment {
     [Alias("Get-RuntimeEnvironment")]
     param (
@@ -119,7 +93,8 @@ function Get-AzRuntimeEnvironment {
             Method      = "GET"
             Headers     = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params
+        Write-Output $Request
     }
     catch {
         throw $_
@@ -152,7 +127,8 @@ function Get-AzRuntimeEnvironmentPackage {
             Method      = "GET"
             Headers     = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params
+        Write-Output $Request
     }
     catch {
         throw $_
@@ -182,34 +158,13 @@ function Get-AzRuntimeEnvironmentPackages {
             Method      = "GET"
             Headers     = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params
+        Write-Output $Request
     }
     catch {
         throw $_
     }
 }
-<#
-.SYNOPSIS
-Retrieves the runtime environments for an Azure Automation account.
-
-.DESCRIPTION
-The Get-RuntimeEnvironments function retrieves the runtime environments for a specified Azure Automation account. It makes a GET request to the Azure Management API to fetch the runtime environments.
-
-.PARAMETER SubscriptionId
-The ID of the Azure subscription where the Automation account is located.
-
-.PARAMETER ResourceGroupName
-The name of the resource group where the Automation account is located.
-
-.PARAMETER AutomationAccountName
-The name of the Azure Automation account.
-
-.EXAMPLE
-Get-RuntimeEnvironments -SubscriptionId "12345678-90ab-cdef-ghij-klmnopqrstuv" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount"
-
-This example retrieves the runtime environments for the specified Azure Automation account.
-
-#>
 function Get-AzRuntimeEnvironments {
     [Alias("Get-RuntimeEnvironments")]
     param (
@@ -232,51 +187,13 @@ function Get-AzRuntimeEnvironments {
             Method      = "GET"
             Headers     = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params
+        Write-Output $Request
     }
     catch {
         throw $_
     }
 }
-<#
-.SYNOPSIS
-Creates a new runtime environment in an Azure Automation account.
-
-.DESCRIPTION
-The New-RuntimeEnvironment function creates a new runtime environment in an Azure Automation account. It allows you to specify the subscription ID, resource group name, automation account name, runtime environment name, location, language, and whether to include default packages.
-
-.PARAMETER SubscriptionId
-The ID of the Azure subscription.
-
-.PARAMETER ResourceGroupName
-The name of the resource group.
-
-.PARAMETER AutomationAccountName
-The name of the Azure Automation account.
-
-.PARAMETER RuntimeEnvironmentName
-The name of the runtime environment.
-
-.PARAMETER Location
-The location where the runtime environment will be created. Default value is "westeurope".
-
-.PARAMETER Language
-The language of the runtime environment. Valid values are "Powershell" and "Python". Default value is "Powershell".
-
-.PARAMETER NoDefaultPackages
-Specifies whether to include default packages for the Powershell language. By default, default packages are included.
-
-.EXAMPLE
-New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Powershell"
-
-This example creates a new Powershell runtime environment in the specified Azure Automation account.
-
-.EXAMPLE
-New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Python" -NoDefaultPackages
-
-This example creates a new Python runtime environment in the specified Azure Automation account without including default packages.
-
-#>
 function New-AzRuntimeEnvironment {
     [Alias("New-RuntimeEnvironment")]
     [CmdletBinding()]
@@ -300,7 +217,7 @@ function New-AzRuntimeEnvironment {
         [ValidateSet("Powershell", "Python")]
         [string]$Language = "Powershell",
 
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [switch]$NoDefaultPackages
     )
 
@@ -318,7 +235,7 @@ function New-AzRuntimeEnvironment {
         
         if ($PSBoundParameters['Language'].Equals("Powershell")) {
             # Creating the ValidateSet attribute
-            $ValidationSet = New-Object System.Management.Automation.ValidateSetAttribute('7.2', '5.1')
+            $ValidationSet = New-Object System.Management.Automation.ValidateSetAttribute('7.4', '7.2', '5.1')
         }
         elseif ($PSBoundParameters['Language'].Equals("Python")) {
             # Creating the ValidateSet attribute
@@ -340,6 +257,7 @@ function New-AzRuntimeEnvironment {
         try {
             # Create Body Object
             $Body = [PSCustomObject]@{}
+            
             # Add Location (Mandatory)
             $Body | Add-Member -MemberType NoteProperty -Name "location" -Value $Location
            
@@ -347,17 +265,18 @@ function New-AzRuntimeEnvironment {
             $Properties = [PSCustomObject]@{}
 
             # Add Runtime Object
-            $runtime = @{
+            $Runtime = @{
                 language = $Language
                 version  = $PSBoundParameters['Version']
             }
-            $Properties | Add-Member -MemberType NoteProperty -Name "runtime" -Value $runtime
+            $Properties | Add-Member -MemberType NoteProperty -Name "runtime" -Value $Runtime
 
             # Add Default Packages Object if Language is Powershell
             if ($Language -eq "Powershell") {
-                if (!($NoDefaultPackages)){
+                if (!($NoDefaultPackages)) {
                     $defaultPackages = @{
-                        "Az" = "11.2.0"
+                        "Az" = "12.3.0"
+                        "Azure CLI" = "2.64.0"
                     }
                     $Properties | Add-Member -MemberType NoteProperty -Name "defaultPackages" -Value $defaultPackages
                 }
@@ -368,14 +287,15 @@ function New-AzRuntimeEnvironment {
             
             # Create Parameters
             $Params = @{
-                Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
-                Method      = "PUT"
-                Headers     = (Get-AzHeader)
-                Body        = $Body
+                Uri     = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
+                Method  = "PUT"
+                Headers = (Get-AzHeader)
+                Body    = $Body
             }
 
             # Invoke Rest Method
-            return Invoke-AzAPI @Params
+            $Request = Invoke-AzAPI @Params
+            Write-Output $Request
         }
         catch {
             throw $_
@@ -383,31 +303,6 @@ function New-AzRuntimeEnvironment {
 
     }
 }
-<#
-.SYNOPSIS
-Removes a runtime environment from an Azure Automation account.
-
-.DESCRIPTION
-The Remove-RuntimeEnvironment function removes a specified runtime environment from an Azure Automation account. It sends a DELETE request to the Azure Management API to delete the runtime environment.
-
-.PARAMETER SubscriptionId
-The ID of the Azure subscription that contains the resource group and automation account.
-
-.PARAMETER ResourceGroupName
-The name of the resource group that contains the automation account.
-
-.PARAMETER AutomationAccountName
-The name of the Azure Automation account.
-
-.PARAMETER RuntimeEnvironmentName
-The name of the runtime environment to be removed.
-
-.EXAMPLE
-Remove-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment"
-
-This example removes a runtime environment named "MyRuntimeEnvironment" from the Azure Automation account "MyAutomationAccount" in the resource group "MyResourceGroup" under the specified subscription.
-
-#>
 function Remove-AzRuntimeEnvironment {
     [Alias("Remove-RuntimeEnvironment")]
     param (
@@ -465,43 +360,13 @@ function Remove-AzRuntimeEnvironmentPackage {
             Method      = "DELETE"
             Headers     = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params
+        Write-Output $Request
     }
     catch {
         throw $_
     }
 }
-<#
-.SYNOPSIS
-Sets the package for a runtime environment in an Azure Automation account.
-
-.DESCRIPTION
-The Set-RuntimeEnvironmentPackage function sets the package for a specific runtime environment in an Azure Automation account. The package is specified by providing the subscription ID, resource group name, automation account name, runtime environment name, package name, and content link.
-
-.PARAMETER SubscriptionId
-The ID of the Azure subscription.
-
-.PARAMETER ResourceGroupName
-The name of the resource group containing the Azure Automation account.
-
-.PARAMETER AutomationAccountName
-The name of the Azure Automation account.
-
-.PARAMETER RuntimeEnvironmentName
-The name of the runtime environment.
-
-.PARAMETER PackageName
-The name of the package. It must be the same as the module name.
-
-.PARAMETER ContentLink
-The SAS URL with reader permission for the package content.
-
-.EXAMPLE
-Set-RuntimeEnvironmentPackage -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -PackageName "MyPackage" -ContentLink "https://example.com/mypackage.sas"
-
-This example sets the package for the "MyRuntimeEnvironment" runtime environment in the "MyAutomationAccount" Azure Automation account. The package name is "MyPackage" and the content link is "https://example.com/mypackage.sas".
-
-#>
 function Set-AzRuntimeEnvironmentPackage {
     [Alias("Set-RuntimeEnvironmentPackage")]
     param (
@@ -517,11 +382,14 @@ function Set-AzRuntimeEnvironmentPackage {
         [Parameter(Mandatory = $true)]
         [string]$RuntimeEnvironmentName,
 
-        [Parameter(Mandatory = $true)]
-        [string]$PackageName, # Have to be the same as the module name
+        [Parameter(Mandatory = $true, HelpMessage = "Name must be the same as the module name")]
+        [string]$PackageName,
 
-        [Parameter(Mandatory = $true)]
-        [string]$ContentLink # Have to be a SAS URL with reader permission
+        [Parameter(Mandatory = $true, HelpMessage = "SAS URL to the module package")]
+        [string]$ContentLink,
+
+        [Parameter(Mandatory = $false, HelpMessage = "Wait for the operation to complete")]
+        [switch]$Wait
     )
 
     $ErrorActionPreference = "Stop"
@@ -536,12 +404,36 @@ function Set-AzRuntimeEnvironmentPackage {
         }
 
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages/$($PackageName)"
-            Method      = "PUT"
-            Headers     = (Get-AzHeader)
-            Body        = $Body
+            Uri     = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages/$($PackageName)"
+            Headers = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params -Method "PUT" -Body $Body
+
+        if ($Wait) {
+            
+            $PackageName = ($ContentLink.Split("/")[-1]).Split("?")[0]
+                    
+            Write-Verbose "`n[$(Get-Date -Format "HH:mm:ss")] : [INFO] : [$AutomationAccountName] : Uploading package: $PackageName"
+                    
+            $CommandData = Measure-Command {
+                do {            
+                    Start-Sleep -Seconds 5
+                    $Request = Invoke-AzAPI @Params -Method "GET"
+
+                    # If Package provisioning failed, throw an error
+                    if ($Request.properties.provisioningState -eq "Failed") {
+                        throw $_.ErrorDetails.Message
+                    }
+                        
+                } until ($Request.properties.provisioningState -eq "Succeeded")
+            }
+                    
+            Write-Verbose "`n[$(Get-Date -Format "HH:mm:ss")] : [COMPLETED] : [$AutomationAccountName] : Package provisioned successfully after $($CommandData.TotalSeconds) seconds!`n"
+        }
+        else {
+            Write-Verbose "`n[$(Get-Date -Format "HH:mm:ss")] : [INFO] : [$AutomationAccountName] : Package upload started!"
+        }
+        Write-Output $Request
     }
     catch {
         throw $_
