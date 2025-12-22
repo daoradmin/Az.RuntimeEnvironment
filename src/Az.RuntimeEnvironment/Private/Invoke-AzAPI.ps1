@@ -13,7 +13,7 @@ function Invoke-AzAPI {
         [System.Object]$Body,
 
         [Parameter(Mandatory=$false)]
-        [string]$ApiVersion="2023-05-15-preview"
+        [string]$ApiVersion="2024-10-23"
     )
 
     $ErrorActionPreference="Stop"
