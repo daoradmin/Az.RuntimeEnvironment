@@ -25,7 +25,8 @@ function Remove-AzRuntimeEnvironmentPackage {
             Method      = "DELETE"
             Headers     = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params
+        Write-Output $Request
     }
     catch {
         throw $_
