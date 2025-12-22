@@ -1,25 +1,3 @@
-<#
-.SYNOPSIS
-Retrieves the runtime environments for an Azure Automation account.
-
-.DESCRIPTION
-The Get-RuntimeEnvironments function retrieves the runtime environments for a specified Azure Automation account. It makes a GET request to the Azure Management API to fetch the runtime environments.
-
-.PARAMETER SubscriptionId
-The ID of the Azure subscription where the Automation account is located.
-
-.PARAMETER ResourceGroupName
-The name of the resource group where the Automation account is located.
-
-.PARAMETER AutomationAccountName
-The name of the Azure Automation account.
-
-.EXAMPLE
-Get-RuntimeEnvironments -SubscriptionId "12345678-90ab-cdef-ghij-klmnopqrstuv" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount"
-
-This example retrieves the runtime environments for the specified Azure Automation account.
-
-#>
 function Get-AzRuntimeEnvironments {
     [Alias("Get-RuntimeEnvironments")]
     param (
@@ -42,7 +20,8 @@ function Get-AzRuntimeEnvironments {
             Method      = "GET"
             Headers     = (Get-AzHeader)
         }
-        return Invoke-AzAPI @Params
+        $Request = Invoke-AzAPI @Params
+        Write-Output $Request
     }
     catch {
         throw $_
