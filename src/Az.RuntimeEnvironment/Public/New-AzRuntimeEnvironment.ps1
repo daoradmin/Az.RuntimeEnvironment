@@ -1,42 +1,3 @@
-<#
-.SYNOPSIS
-Creates a new runtime environment in an Azure Automation account.
-
-.DESCRIPTION
-The New-RuntimeEnvironment function creates a new runtime environment in an Azure Automation account. It allows you to specify the subscription ID, resource group name, automation account name, runtime environment name, location, language, and whether to include default packages.
-
-.PARAMETER SubscriptionId
-The ID of the Azure subscription.
-
-.PARAMETER ResourceGroupName
-The name of the resource group.
-
-.PARAMETER AutomationAccountName
-The name of the Azure Automation account.
-
-.PARAMETER RuntimeEnvironmentName
-The name of the runtime environment.
-
-.PARAMETER Location
-The location where the runtime environment will be created. Default value is "westeurope".
-
-.PARAMETER Language
-The language of the runtime environment. Valid values are "Powershell" and "Python". Default value is "Powershell".
-
-.PARAMETER NoDefaultPackages
-Specifies whether to include default packages for the Powershell language. By default, default packages are included.
-
-.EXAMPLE
-New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Powershell"
-
-This example creates a new Powershell runtime environment in the specified Azure Automation account.
-
-.EXAMPLE
-New-RuntimeEnvironment -SubscriptionId "12345678-1234-1234-1234-1234567890ab" -ResourceGroupName "MyResourceGroup" -AutomationAccountName "MyAutomationAccount" -RuntimeEnvironmentName "MyRuntimeEnvironment" -Language "Python" -NoDefaultPackages
-
-This example creates a new Python runtime environment in the specified Azure Automation account without including default packages.
-
-#>
 function New-AzRuntimeEnvironment {
     [Alias("New-RuntimeEnvironment")]
     [CmdletBinding()]
@@ -100,6 +61,7 @@ function New-AzRuntimeEnvironment {
         try {
             # Create Body Object
             $Body = [PSCustomObject]@{}
+            
             # Add Location (Mandatory)
             $Body | Add-Member -MemberType NoteProperty -Name "location" -Value $Location
            
@@ -107,17 +69,18 @@ function New-AzRuntimeEnvironment {
             $Properties = [PSCustomObject]@{}
 
             # Add Runtime Object
-            $runtime = @{
+            $Runtime = @{
                 language = $Language
                 version  = $PSBoundParameters['Version']
             }
-            $Properties | Add-Member -MemberType NoteProperty -Name "runtime" -Value $runtime
+            $Properties | Add-Member -MemberType NoteProperty -Name "runtime" -Value $Runtime
 
             # Add Default Packages Object if Language is Powershell
             if ($Language -eq "Powershell") {
                 if (!($NoDefaultPackages)) {
                     $defaultPackages = @{
                         "Az" = "12.3.0"
+                        "Azure CLI" = "2.64.0"
                     }
                     $Properties | Add-Member -MemberType NoteProperty -Name "defaultPackages" -Value $defaultPackages
                 }
@@ -135,12 +98,12 @@ function New-AzRuntimeEnvironment {
             }
 
             # Invoke Rest Method
-            return Invoke-AzAPI @Params
+            $Request = Invoke-AzAPI @Params
+            Write-Output $Request
         }
         catch {
             throw $_
         }
 
     }
-}
 }
