@@ -79,7 +79,7 @@ function New-AzRuntimeEnvironment {
             if ($Language -eq "Powershell") {
                 if (!($NoDefaultPackages)) {
                     $defaultPackages = @{
-                        "Az" = "12.3.0"
+                        "Az"        = "12.3.0"
                         "Azure CLI" = "2.64.0"
                     }
                     $Properties | Add-Member -MemberType NoteProperty -Name "defaultPackages" -Value $defaultPackages
@@ -104,6 +104,5 @@ function New-AzRuntimeEnvironment {
         catch {
             throw $_
         }
-
     }
 }
