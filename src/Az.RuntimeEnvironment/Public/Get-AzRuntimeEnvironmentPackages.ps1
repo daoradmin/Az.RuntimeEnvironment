@@ -18,9 +18,9 @@ function Get-AzRuntimeEnvironmentPackages {
 
     try {
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages"
-            Method      = "GET"
-            Headers     = (Get-AzHeader)
+            Uri     = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$RuntimeEnvironmentName/packages"
+            Method  = "GET"
+            Headers = (Get-AzHeader)
         }
         $Request = Invoke-AzAPI @Params
         Write-Output $Request

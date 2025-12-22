@@ -18,9 +18,9 @@ function Remove-AzRuntimeEnvironment {
 
     try {
         $Params = @{
-            Uri         = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
-            Method      = "DELETE"
-            Headers     = (Get-AzHeader)
+            Uri     = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName/runtimeEnvironments/$($RuntimeEnvironmentName)"
+            Method  = "DELETE"
+            Headers = (Get-AzHeader)
         }
         return Invoke-AzAPI @Params
     }
